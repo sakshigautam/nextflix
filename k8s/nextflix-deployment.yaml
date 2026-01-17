@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: nextflix
-          image: nextflix:latest # Replace with your built image name/tag
+          image: sakshi19091998/nextflix:latest # Replace with your built image name/tag
           ports:
             - containerPort: 3000
           env:
