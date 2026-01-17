@@ -1,0 +1,36 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Set up Minikube
+        uses: medyagh/setup-minikube@v0.0.14
+
+      - name: Build Docker image
+        run: docker build -t nextflix:latest .
+
+      - name: Load Docker image into Minikube
+        run: |
+          minikube image load nextflix:latest
+
+      - name: Deploy to Minikube
+        run: |
+          kubectl apply -f k8s/
+        env:
+          TMDB_KEY: dummy

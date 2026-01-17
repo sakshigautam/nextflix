@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextflix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextflix
+  template:
+    metadata:
+      labels:
+        app: nextflix
+    spec:
+      containers:
+        - name: nextflix
+          image: nextflix:latest # Replace with your built image name/tag
+          ports:
+            - containerPort: 3000
+          env:
+            - name: TMDB_KEY
+              value: "dummy"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextflix-service
+spec:
+  type: NodePort
+  selector:
+    app: nextflix
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30080

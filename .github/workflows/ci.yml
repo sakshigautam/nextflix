@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build
+        run: yarn build
+
+      - name: Build Docker image
+        run: docker build -t nextflix:latest .
+
+      - name: Run Trivy vulnerability scan on Docker image
+        uses: aquasecurity/trivy-action@v0.13.1
+        with:
+          scan-type: 'image'
+          image-ref: 'nextflix:latest'
+
+      - name: Run Snyk for dependency scan
+        uses: snyk/actions/node@v3
+        with:
+          command: test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # Uncomment if you add tests in future
+      # - name: Test
+      #   run: yarn test
+
+      # Optionally check formatting
+      # - name: Check formatting
+      #   run: yarn prettier --check .
+
+      - name: Set dummy TMDB_KEY
+        run: echo "TMDB_KEY=dummy" >> $GITHUB_ENV
