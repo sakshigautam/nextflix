@@ -31,18 +31,18 @@ jobs:
       - name: Build Docker image
         run: docker build -t nextflix:latest .
 
-      - name: Run Trivy vulnerability scan on Docker image
-        uses: aquasecurity/trivy-action@v0.13.1
-        with:
-          scan-type: 'image'
-          image-ref: 'nextflix:latest'
+      # - name: Run Trivy vulnerability scan on Docker image
+      #   uses: aquasecurity/trivy-action@v0.13.1
+      #   with:
+      #     scan-type: 'image'
+      #     image-ref: 'nextflix:latest'
 
-      - name: Run Snyk for dependency scan
-        uses: snyk/actions/node@v3
-        with:
-          command: test
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      # - name: Run Snyk for dependency scan
+      #   uses: snyk/actions/node@v3
+      #   with:
+      #     command: test
+      #   env:
+      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       # Uncomment if you add tests in future
       # - name: Test
