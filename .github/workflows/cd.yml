@@ -22,9 +22,8 @@ jobs:
       - name: Deploy to Minikube
         run: |
           kubectl apply -f k8s/
+          curl http://localhost:3000
 
-      - name: Test Application
-        run: |
-           curl http://localhost:3000
+
         env:
           TMDB_KEY: dummy
