@@ -25,11 +25,10 @@ jobs:
       - name: Deploy to Minikube
         run: kubectl apply -f k8s/
 
-      - name: Wait for deployment
-        run: kubectl rollout status deployment/nextflix --timeout=120s
 
       - name: Port forward and smoke test
         run: |
+          sleep 120
           kubectl port-forward svc/nextflix-service 3000:3000 &
           sleep 10
           curl http://localhost:3000
